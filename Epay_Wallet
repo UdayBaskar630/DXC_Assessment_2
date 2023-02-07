@@ -1,0 +1,83 @@
+package Epay_Wallet_;
+class User
+{
+    int id;
+    String username;
+    String email;
+    double walletBalance;
+  
+    public User(int id, String username, String email, double walletBalance) 
+    {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.walletBalance = walletBalance;
+    }
+  
+    public boolean makePayment(double billAmount)
+    {
+        if (walletBalance >= billAmount) {
+            walletBalance -= billAmount;
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+class KYCUser extends User 
+{
+    double rewardPoints;
+  
+    public KYCUser(int id, String username, String email, double walletBalance)
+    {
+        super(id, username, email, walletBalance);
+        rewardPoints = 0;
+    }
+  
+    
+    public boolean makePayment(double billAmount)
+    {
+        if (super.makePayment(billAmount)) {
+            rewardPoints += 0.1 * billAmount;
+            return true;
+        } else {
+            return false;
+        }
+    }
+}
+
+class EPayWallet 
+{
+    static void processPaymentByUser(User user, double billAmount) 
+    {
+        if (user.makePayment(billAmount))
+        {
+            System.out.println("Congratulations " + user.username + ", payment of " + billAmount + " was successful");
+        } 
+        else 
+        {
+            System.out.println("Sorry " + user.username + ", not enough balance to make payment");
+        }
+        System.out.println("Your wallet balance is " + user.walletBalance);
+        if (user instanceof KYCUser) 
+        {
+            System.out.println("You have " + ((KYCUser) user).rewardPoints + " reward points");
+        }
+        
+    }
+}
+
+class Tester
+{
+    public static void main(String[] args)
+    {
+        User jack = new User(101, "Jack", "jack@dxc.com", 1000);
+        KYCUser jill = new KYCUser(201, "Jill", "jill@dxc.com", 3000);
+      
+        EPayWallet.processPaymentByUser(jack, 700);
+        EPayWallet.processPaymentByUser(jill, 1500);
+        EPayWallet.processPaymentByUser(jill, 800);
+        EPayWallet.processPaymentByUser(jill, 1200);
+    }
+}
